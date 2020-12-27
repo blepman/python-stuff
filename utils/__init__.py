@@ -1,15 +1,37 @@
-from subprocess import check_output
+from platform import system as platform
+from subprocess import check_output, DEVNULL, CalledProcessError
+
+platform = platform()
 
 
-def list_process(proc_name: str):
-    """ Check for a running process.
-    :arg        proc_name: Name of process e.g "chrome.exe", "dota2.exe", "pycharm64.exe", etc."
-    :returns:   List with lists containing process name, and process id (pid)"""
-    proc_list = [[i.split()[0], int(i.split()[1])] for i in
-                 check_output(["tasklist", "/nh", "/fi", f"IMAGENAME eq {proc_name}"]).decode("cp1252").split("\n")[
-                 1:-1]]
-    return proc_list if len(proc_list) != 0 else False
+def list_processes(proc_name: str = None):
+    """ Check for a running process by name, and list the process ids.
+    Works on both windows and linux, hopefully.
+    :arg        proc_name: Name of process e.g "chrome.exe", "bash", "pycharm64.exe", etc."
+    :returns:   List with process ids """
 
+    if not proc_name:
+        return False, "Process name not supplied."
 
-# Only semantically different from the above.
-list_processes = list_process
+    if not (platform == "Linux" or platform == "Windows"):
+        return False, "Platform not supported."
+
+    if platform == "Linux":
+        try:
+            args = ["pidof", f"{proc_name}"]
+            procs = check_output(args, stderr=DEVNULL).decode("utf-8", errors="ignore").split()
+            return [i for i in procs] if len(procs) != 0 else False
+        except CalledProcessError:
+            return False
+        except Exception as e:
+            return False, e
+    else:
+        try:
+            args = ["tasklist", "/nh", "/fi", f"IMAGENAME eq {proc_name}"]
+            procs = [i.split()[1]
+                     for i in check_output(args, stderr=DEVNULL).decode("utf-8", errors="ignore").split("\n")[1:-1]]
+            return procs if len(procs) != 0 else False
+        except CalledProcessError:
+            return False
+        except Exception as e:
+            return False, e
