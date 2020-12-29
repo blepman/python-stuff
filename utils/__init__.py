@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from platform import system as platform
 from subprocess import check_output, DEVNULL, CalledProcessError
 
