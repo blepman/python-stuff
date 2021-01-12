@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-from platform import system as platform
+from os_type import system as os_type
 from subprocess import check_output, DEVNULL, CalledProcessError
 
-platform = platform()
+os_type = os_type()
 
 
 def list_processes(proc_name: str = None):
@@ -14,10 +14,10 @@ def list_processes(proc_name: str = None):
     if not proc_name:
         return False, "Process name not supplied."
 
-    if not (platform == "Linux" or platform == "Windows"):
+    if not (os_type == "Linux" or os_type == "Windows"):
         return False, "Platform not supported."
 
-    if platform == "Linux":
+    if os_type == "Linux":
         try:
             args = ["pidof", f"{proc_name}"]
             procs = check_output(args, stderr=DEVNULL).decode("utf-8", errors="ignore").split()
