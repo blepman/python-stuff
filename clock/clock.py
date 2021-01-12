@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from time import strftime, sleep
 def clock_24h(interval: int=5):
     def _time():
