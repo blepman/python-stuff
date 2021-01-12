@@ -1,4 +1,4 @@
-#!usr/bin/env python3
+#!usr/bin/env python
 def get_xy_from_resolution(from_xy, from_res, to_res):
     """ Get new proportional location of coords (x,y) from known coords (x,y) at a specific resolution.
     :arg from_xy:   list[int, int] coords (x,y) to convert from.
